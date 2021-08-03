@@ -35,3 +35,5 @@ class GxCertWriter {
     });
   }
 }
+
+module.exports = GxCertWriter;
