@@ -13,5 +13,8 @@
     "ethereumjs-common": "^1.5.2",
     "ethereumjs-tx": "^2.1.2",
     "web3": "^1.5.0"
+  },
+  "devDependencies": {
+    "gxcert-lib": "github:gaiax/gxcert-lib"
   }
 }
