@@ -14,6 +14,7 @@ class GxCertWriter {
     this.contract = await new this.web3.eth.Contract(abi, this.contractAddress);
   }
   async write(writerAddress, signedObject) {
+    console.log(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature, signedObject.cidHash);
     const data = this.contract.methods.createCert(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature, signedObject.cidHash).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
