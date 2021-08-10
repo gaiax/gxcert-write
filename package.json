@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "web3": "^1.5.0"
   },
   "devDependencies": {
-    "gxcert-lib": "github:gaiax/gxcert-lib"
+    "gxcert-lib": "github:gaiax/gxcert-lib",
+    "mocha": "^9.0.3"
   }
 }
