@@ -1,6 +1,7 @@
 const EthereumTx = require("ethereumjs-tx").Transaction;
 const Common = require("ethereumjs-common").default;
-const abi = require("./abi.json");
+const fs = require("fs");
+const abi = JSON.parse(fs.readFileSync(__dirname + "/abi.json", "utf8"));
 
 class GxCertWriter {
   constructor(web3, contractAddress, privateKey, common) {
