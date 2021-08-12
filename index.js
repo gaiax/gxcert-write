@@ -4,11 +4,11 @@ const fs = require("fs");
 const abi = JSON.parse(fs.readFileSync(__dirname + "/abi.json", "utf8"));
 
 class GxCertWriter {
-  constructor(web3, contractAddress, privateKey, common) {
+  constructor(web3, contractAddress, privateKey, chainId) {
     this.web3 = web3;
     this.contractAddress = contractAddress;
-    this.common = common;
     this.privateKey = privateKey;
+    this.chainId = chainId;
   }
   async init() {
     this.contract = await new this.web3.eth.Contract(abi, this.contractAddress);
@@ -25,6 +25,7 @@ class GxCertWriter {
       gasLimit: this.web3.utils.toHex(gasEstimate),
       to: this.contractAddress,
       from: writerAddress,
+      chainId: this.chainId,
       data
     }
 
