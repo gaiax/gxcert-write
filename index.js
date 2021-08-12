@@ -4,15 +4,11 @@ const fs = require("fs");
 const abi = JSON.parse(fs.readFileSync(__dirname + "/abi.json", "utf8"));
 
 class GxCertWriter {
-  constructor(web3, contractAddress, privateKey, chainId) {
+  constructor(web3, contractAddress, privateKey, common) {
     this.web3 = web3;
     this.contractAddress = contractAddress;
     this.privateKey = privateKey;
-    if (chainId === undefined || chainId === null) {
-      this.chainId = 1337;
-    } else {
-      this.chainId = chainId;
-    }
+    this.common = common;
   }
   async init() {
     this.contract = await new this.web3.eth.Contract(abi, this.contractAddress);
@@ -29,11 +25,10 @@ class GxCertWriter {
       gasLimit: this.web3.utils.toHex(gasEstimate),
       to: this.contractAddress,
       from: writerAddress,
-      chainId: this.chainId,
       data
     }
 
-    const transaction = await new EthereumTx(details);
+    const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
     await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
