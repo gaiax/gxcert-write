@@ -8,7 +8,11 @@ class GxCertWriter {
     this.web3 = web3;
     this.contractAddress = contractAddress;
     this.privateKey = privateKey;
-    this.chainId = chainId;
+    if (chainId === undefined || chainId === null) {
+      this.chainId = 1337;
+    } else {
+      this.chainId = chainId;
+    }
   }
   async init() {
     this.contract = await new this.web3.eth.Contract(abi, this.contractAddress);
