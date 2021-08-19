@@ -15,10 +15,10 @@ class GxCertWriter {
   }
   async write(writerAddress, signedObject) {
     console.log(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature, signedObject.cidHash);
-    const data = this.contract.methods.createCert(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature, signedObject.cidHash).encodeABI();
+    const data = this.contract.methods.createCert(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
-    const gasEstimate = await this.contract.methods.createCert(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature, signedObject.cidHash).estimateGas({ from: writerAddress });
+    const gasEstimate = await this.contract.methods.createCert(signedObject.certificate.from, signedObject.certificate.to, signedObject.cid, signedObject.signature).estimateGas({ from: writerAddress });
     const details = {
       nonce: this.web3.utils.toHex(nonce),
       gasPrice: this.web3.utils.toHex(gasPrice),
