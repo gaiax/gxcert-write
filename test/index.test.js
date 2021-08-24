@@ -5,7 +5,7 @@ const alice = web3.eth.accounts.create();
 const bob = web3.eth.accounts.create();
 const charlie = web3.eth.accounts.create();
 const dave = web3.eth.accounts.create();
-const contractAddress = "0x2d0059214A0c5D4117F630Ab5C5cDf412Cc45f1e";
+const contractAddress = "0x14B7c79b358Dd04c6c2E11a019FB84Ec3913a407";
 const writer = new GxCertWriter(web3, contractAddress, charlie.privateKey.slice(2));
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3);
@@ -14,6 +14,10 @@ const assert = require("assert");
 let groupId;
 
 describe("GxCertWriter", () => {
+  it ("init", async () => {
+    await writer.init();
+    await client.init();
+  });
   describe("Group", () => {
     it("create group", async () => {
       const group = {
@@ -54,8 +58,6 @@ describe("GxCertWriter", () => {
   });
   describe("write", () => {
     it("createCert", async () => {
-      await writer.init();
-      await client.init();
       const certificate = {
         context: {},
         from: alice.address,
