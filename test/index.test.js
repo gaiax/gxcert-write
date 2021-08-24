@@ -27,6 +27,7 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+      groupId = (await client.getGroupIds(alice.address))[0];
     });
     it ("invite member to group by wrong sign", async () => {
       const signedAddress = await client.signMemberAddress(dave.address, bob.privateKey);
