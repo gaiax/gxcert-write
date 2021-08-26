@@ -3,7 +3,8 @@ const Web3 = require("web3");
 const web3 = new Web3("https://matic-mumbai.chainstacklabs.com");
 const alice = web3.eth.accounts.create();
 const bob = web3.eth.accounts.create();
-const privateKey = "3f9b346ba476dece9f8126afbd2c1d1b2d4b6408dcf2ee1d5f9430e65ac44a52";
+const fs = require("fs");
+const privateKey = fs.readFileSync(__dirname + "/../.privkey", "utf8").trim();
 const charlie = {
   address: "0x4e3911c111bBEb8d254708Fb556e4A09C475A87E",
   privateKey,
