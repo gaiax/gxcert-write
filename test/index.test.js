@@ -1,25 +1,41 @@
 const GxCertWriter = require("../index");
 const Web3 = require("web3");
-const web3 = new Web3("http://localhost:7545");
+const web3 = new Web3("https://matic-mumbai.chainstacklabs.com");
 const alice = web3.eth.accounts.create();
 const bob = web3.eth.accounts.create();
-const charlie = web3.eth.accounts.create();
+const privateKey = "3f9b346ba476dece9f8126afbd2c1d1b2d4b6408dcf2ee1d5f9430e65ac44a52";
+const charlie = {
+  address: "0x4e3911c111bBEb8d254708Fb556e4A09C475A87E",
+  privateKey,
+}
+const Common = require("ethereumjs-common").default;
+const common = Common.forCustomChain(
+  "mainnet",
+  {
+    name: "customchain",
+    chainId: 80001,
+  },
+  "petersburg"
+);
+web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
 const contractAddress = "0x14B7c79b358Dd04c6c2E11a019FB84Ec3913a407";
-const writer = new GxCertWriter(web3, contractAddress, charlie.privateKey.slice(2));
+const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
-const client = new GxCertClient(web3);
+const client = new GxCertClient(web3, contractAddress);
 const assert = require("assert");
 
 let groupId;
 
 describe("GxCertWriter", () => {
-  it ("init", async () => {
+  it ("init", async function () {
+    this.timeout(20 * 1000);
     await writer.init();
     await client.init();
   });
   describe("Group", () => {
-    it("create group", async () => {
+    it("create group", async function() {
+      this.timeout(20 * 1000);
       const group = {
         name: "group1",
         member: alice.address,
@@ -31,25 +47,31 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
-      groupId = (await client.getGroupIds(alice.address))[0];
+      const _group = (await client.getGroups(alice.address))[0];
+      assert.equal(group.name, _group.name);
+      assert.equal(group.member, _group.members[0]);
+      groupId = _group.groupId;
     });
-    it ("invite member to group by wrong sign", async () => {
+    it ("invite member to group by wrong sign", async function () {
+      this.timeout(20 * 1000);
       const signedAddress = await client.signMemberAddress(dave.address, bob.privateKey);
       try {
-        await writer.inviteMemberToGroup(groupId, signedAddress);
+        await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
       } catch(err) {
 
       }
     });
-    it ("invite member to group", async () => {
+    it ("invite member to group", async function () {
+      this.timeout(20 * 1000);
       const signedAddress = await client.signMemberAddress(dave.address, alice.privateKey);
-      await writer.inviteMemberToGroup(groupId, signedAddress);
+      await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
     });
-    it ("invite same member to group", async () => {
+    it ("invite same member to group", async function() { 
+      this.timeout(20 * 1000);
       const signedAddress = await client.signMemberAddress(dave.address, alice.privateKey);
       try {
-        await writer.inviteMemberToGroup(groupId, signedAddress);
+        await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
       } catch(err) {
         
@@ -57,7 +79,8 @@ describe("GxCertWriter", () => {
     });
   });
   describe("write", () => {
-    it("createCert", async () => {
+    it("createCert", async function () {
+      this.timeout(20 * 1000);
       const certificate = {
         context: {},
         from: alice.address,
@@ -77,7 +100,6 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
-      assert.ok();
     });
   });
 
