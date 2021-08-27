@@ -34,6 +34,23 @@ describe("GxCertWriter", () => {
     await writer.init();
     await client.init();
   });
+  describe("Profile", () => {
+    it ("create profile", async function() {
+      this.timeout(20 * 1000);
+      const profile = {
+        name: "user1",
+        email: "takuto@example.com",
+      }
+      const signedProfile = await client.signProfile(profile, { privateKey: alice.privateKey });
+      try {
+        await writer.createProfile(charlie.address, signedProfile);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+        return;
+      }
+    });
+  });
   describe("Group", () => {
     it("create group", async function() {
       this.timeout(20 * 1000);
@@ -55,7 +72,7 @@ describe("GxCertWriter", () => {
     });
     it ("invite member to group by wrong sign", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, bob.privateKey);
+      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: bob.privateKey});
       try {
         await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
@@ -65,12 +82,12 @@ describe("GxCertWriter", () => {
     });
     it ("invite member to group", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, alice.privateKey);
+      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
       await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
     });
     it ("invite same member to group", async function() { 
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, alice.privateKey);
+      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
       try {
         await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
