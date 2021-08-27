@@ -13,6 +13,41 @@ class GxCertWriter {
   async init() {
     this.contract = await new this.web3.eth.Contract(abi, this.contractAddress);
   }
+  async createProfile(writerAddress, userAddress, signedProfile) {
+    const data = this.contract.methods.createProfile(
+      userAddress, 
+      signedProfile.profile.name, 
+      signedProfile.profile.email, 
+      signedProfile.nameSignature, 
+      signedProfile.emailSignature
+    ).encodeABI();
+    const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
+    const gasPrice = await this.web3.eth.getGasPrice();
+    const gasEstimate = await this.contract.methods.createProfile(
+      userAddress, 
+      signedProfile.profile.name, 
+      signedProfile.profile.email, 
+      signedProfile.nameSignature, 
+      signedProfile.emailSignature
+    ).estimateGas({
+      from: writerAddress,
+    });
+    const details = {
+      nonce: this.web3.utils.toHex(nonce),
+      gasPrice: this.web3.utils.toHex(gasPrice),
+      gasLimit: this.web3.utils.toHex(gasEstimate),
+      to: this.contractAddress,
+      from: writerAddress,
+      data
+    }
+
+    const transaction = await new EthereumTx(details, { common: this.common });
+    transaction.sign(Buffer.from(this.privateKey, "hex"));
+    const rawData = "0x" + transaction.serialize().toString("hex");
+    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
+      console.log(receipt);
+    });
+  }
   async createGroup(writerAddress, group) {
     const data = this.contract.methods.createGroup(group.name, group.member).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
