@@ -42,8 +42,9 @@ describe("GxCertWriter", () => {
         email: "takuto@example.com",
       }
       const signedProfile = await client.signProfile(profile, { privateKey: alice.privateKey });
+      console.log(signedProfile);
       try {
-        await writer.createProfile(charlie.address, signedProfile);
+        await writer.createProfile(charlie.address, alice.address, signedProfile);
       } catch(err) {
         console.error(err);
         assert.fail();
