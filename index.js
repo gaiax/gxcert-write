@@ -49,10 +49,10 @@ class GxCertWriter {
     });
   }
   async createGroup(writerAddress, group) {
-    const data = this.contract.methods.createGroup(group.name, group.member.name, group.member.address).encodeABI();
+    const data = this.contract.methods.createGroup(group.name, group.member).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
-    const gasEstimate = await this.contract.methods.createGroup(group.name, group.member.name, group.member.address).estimateGas({
+    const gasEstimate = await this.contract.methods.createGroup(group.name, group.member).estimateGas({
       from: writerAddress,
     });
     const details = {
@@ -72,10 +72,10 @@ class GxCertWriter {
     });
   }
   async inviteMemberToGroup(writerAddress, groupId, signedMember) {
-    const data = this.contract.methods.inviteMemberToGroup(groupId, signedMember.name, signedMember.address, signedMember.nameSignature, signedMember.addressSignature).encodeABI();
+    const data = this.contract.methods.inviteMemberToGroup(groupId, signedMember.address, signedMember.signature).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
-    const gasEstimate = await this.contract.methods.inviteMemberToGroup(groupId, signedMember.name, signedMember.address, signedMember.nameSignature, signedMember.addressSignature).estimateGas({
+    const gasEstimate = await this.contract.methods.inviteMemberToGroup(groupId, signedMember.address, signedMember.signature).estimateGas({
       from: writerAddress,
     });
     const details = {
