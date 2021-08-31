@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0x148d5A48945f78e47C283580a127bF6F85497B57";
+const contractAddress = "0xd2E9A091A1a100f12E6371fE421879836C09d4Eb";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -43,7 +43,6 @@ describe("GxCertWriter", () => {
         email: "alice@example.com",
       }
       const signedProfile = await client.signProfile(profile, { privateKey: alice.privateKey });
-      console.log(signedProfile);
       try {
         await writer.createProfile(charlie.address, alice.address, signedProfile);
       } catch(err) {
@@ -117,15 +116,15 @@ describe("GxCertWriter", () => {
       }
       const signedCertificate = await client.signCertificate(certificate, { privateKey: alice.privateKey });
       try {
-        await writer.createCert(signedCertificate.certificate.groupId, signedCertificate.cid, signedCertificate.signature);
+        await writer.createCert(charlie.address, signedCertificate);
       } catch(err) {
         console.error(err);
         assert.fail();
         return;
       }
-      const certificates = await client.getReceivedUserCerts(alice.address);
+      const certificates = await client.getGroupCerts(groupId);
       assert.equal(certificates.length, 1);
-      certId = certificates[0].certificate.id;
+      certId = certificates[0].id;
     });
   });
 
@@ -139,7 +138,7 @@ describe("GxCertWriter", () => {
       }
       const signedUserCertificate = await client.signUserCertificate(userCert, { privateKey: alice.privateKey });
       try {
-        await writer.createUserCert(certId, userCert.from, userCert.to, signedUserCertificate.signature);
+        await writer.createUserCert(charlie.address, signedUserCertificate);
       } catch(err) {
         console.error(err);
         assert.fail();
