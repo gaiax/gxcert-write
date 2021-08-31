@@ -27,6 +27,7 @@ const client = new GxCertClient(web3, contractAddress);
 const assert = require("assert");
 
 let groupId;
+let certId;
 
 describe("GxCertWriter", () => {
   it ("init", async function () {
@@ -104,27 +105,44 @@ describe("GxCertWriter", () => {
       }
     });
   });
-  describe("write", () => {
+  describe("Cert", () => {
     it("createCert", async function () {
       this.timeout(20 * 1000);
       const certificate = {
         context: {},
-        from: alice.address,
-        to: bob.address,
-        issued_at: (new Date()).getTime(),
         title: "title",
         description: "description",
         image: "image",
-        url: "https://example.com",
         groupId,
       }
-      const signedObject = await client.signCertificate(certificate, alice.privateKey);
+      const signedCertificate = await client.signCertificate(certificate, { privateKey: alice.privateKey });
       try {
-        await writer.write(charlie.address, signedObject);
+        await writer.createCert(signedCertificate.certificate.groupId, signedCertificate.cid, signedCertificate.signature);
       } catch(err) {
         console.error(err);
         assert.fail();
         return;
+      }
+      const certificates = await client.getReceivedUserCerts(alice.address);
+      assert.equal(certificates.length, 1);
+      certId = certificates[0].certificate.id;
+    });
+  });
+
+  describe("User Cert", () => {
+    it("createUserCert", async function() {
+      this.timeout(20 * 1000);
+      const userCert = {
+        certId,
+        from: alice.address,
+        to: bob.address,
+      }
+      const signedUserCertificate = await client.signUserCertificate(userCert, { privateKey: alice.privateKey });
+      try {
+        await writer.createUserCert(certId, userCert.from, userCert.to, signedUserCertificate.signature);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
       }
     });
   });
