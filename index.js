@@ -18,8 +18,10 @@ class GxCertWriter {
       userAddress, 
       signedProfile.profile.name, 
       signedProfile.profile.email, 
+      signedProfile.profile.icon,
       signedProfile.nameSignature, 
-      signedProfile.emailSignature
+      signedProfile.emailSignature,
+      signedProfile.iconSignature,
     ).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
@@ -27,8 +29,10 @@ class GxCertWriter {
       userAddress, 
       signedProfile.profile.name, 
       signedProfile.profile.email, 
+      signedProfile.profile.icon,
       signedProfile.nameSignature, 
-      signedProfile.emailSignature
+      signedProfile.emailSignature,
+      signedProfile.iconSignature,
     ).estimateGas({
       from: writerAddress,
     });

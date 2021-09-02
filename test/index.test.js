@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0xddcFaf6fF9232058D1E2A759008cfdC2d057C6c2";
+const contractAddress = "0x1B172AF93f43781041347B97d364400E768a228c";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -41,6 +41,7 @@ describe("GxCertWriter", () => {
       const profile = {
         name: "alice",
         email: "alice@example.com",
+        icon: "icon",
       }
       const signedProfile = await client.signProfile(profile, { privateKey: alice.privateKey });
       try {
@@ -50,6 +51,15 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+      try {
+        const _profile = await client.getProfile(alice.address);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+      }
+      assert.equal(_profile.name, profile.name);
+      assert.equal(_profile.email, profile.email);
+      assert.equal(_profile.icon, profile.icon);
     });
   });
   describe("Group", () => {
