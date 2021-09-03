@@ -51,8 +51,9 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+      let _profile;
       try {
-        const _profile = await client.getProfile(alice.address);
+        _profile = await client.getProfile(alice.address);
       } catch(err) {
         console.error(err);
         assert.fail();
