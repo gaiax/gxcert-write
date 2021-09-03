@@ -114,6 +114,27 @@ describe("GxCertWriter", () => {
         
       }
     });
+    it ("disable group member", async function() {
+      this.timeout(20 * 1000);
+      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
+      try {
+        await writer.disableGroupMember(charlie.address, groupId, signedAddress);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+        return;
+      }
+      let group;
+      try {
+        group = await client.getGroup(groupId);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+        return;
+      }
+      assert.equal(group.members.length, 1);
+      assert.equal(group.members[0].name, "alice");
+    });
   });
   describe("Cert", () => {
     it("createCert", async function () {
@@ -153,6 +174,39 @@ describe("GxCertWriter", () => {
       } catch(err) {
         console.error(err);
         assert.fail();
+      }
+      const userCerts = await client.getIssuedUserCerts(certId);
+      assert.equal(userCerts.length, 1);
+      assert.equal(userCerts[0].certificate.id, certId);
+      assert.equal(userCerts[0].from, userCert.from);
+      assert.equal(userCerts[0].to, userCert.to);
+    });
+    it("createUserCerts", async function() {
+      this.timeout(20 * 1000);
+      const userCert = {
+        certId,
+        from: alice.address,
+        to: bob.address,
+      }
+      const signedUserCertificate = await client.signUserCertificate(userCert, { privateKey: alice.privateKey });
+      const signedUserCertificates = [];
+      for (let i = 0; i < 5; i++) {
+        signedUserCertificates.push(signedUserCertificate);
+      }
+      
+      try {
+        await writer.createUserCert(charlie.address, signedUserCertificates);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+        return;
+      }
+      const userCerts = await client.getIssuedUserCerts(certId);
+      assert.equal(userCerts.length, 6);
+      for (let i = 0; i < 5; i++) {
+        assert.equal(userCerts[i].certificate.id, certId);
+        assert.equal(userCerts[i].from, userCert.from);
+        assert.equal(userCerts[i].to, userCert.to);
       }
     });
   });
