@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0xf68712119b2b699ad5EaEA3E791Ea48059c308ec";
+const contractAddress = "0xEbeD13ee7b74Fb9c0dA30A980D3C579B6cAB9A37";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -68,6 +68,8 @@ describe("GxCertWriter", () => {
       this.timeout(20 * 1000);
       const group = {
         name: "group1",
+        residence: "residence",
+        phone: "phone",
         member: alice.address,
       }
       try {
@@ -79,6 +81,8 @@ describe("GxCertWriter", () => {
       }
       const _group = (await client.getGroups(alice.address))[0];
       assert.equal(group.name, _group.name);
+      assert.equal(group.residence, _group.residence);
+      assert.equal(group.phone, _group.phone);
       assert.equal(group.member, _group.members[0].address);
       assert.equal("alice", _group.members[0].name);
       groupId = _group.groupId;

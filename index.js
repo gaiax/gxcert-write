@@ -53,10 +53,10 @@ class GxCertWriter {
     });
   }
   async createGroup(writerAddress, group) {
-    const data = this.contract.methods.createGroup(group.name, group.member).encodeABI();
+    const data = this.contract.methods.createGroup(group.name, group.residence, group.phone, group.member).encodeABI();
     const nonce = await this.web3.eth.getTransactionCount(writerAddress, "pending");
     const gasPrice = await this.web3.eth.getGasPrice();
-    const gasEstimate = await this.contract.methods.createGroup(group.name, group.member).estimateGas({
+    const gasEstimate = await this.contract.methods.createGroup(group.name, group.residence, group.phone, group.member).estimateGas({
       from: writerAddress,
     });
     const details = {
