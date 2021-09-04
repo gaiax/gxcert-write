@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0xEbeD13ee7b74Fb9c0dA30A980D3C579B6cAB9A37";
+const contractAddress = "0x0B69CF4510bC50d6B8b406a9D63cae436B7dc829";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -89,7 +89,7 @@ describe("GxCertWriter", () => {
     });
     it ("invite member to group by wrong sign", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: bob.privateKey});
+      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: bob.privateKey});
       try {
         await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
@@ -99,7 +99,7 @@ describe("GxCertWriter", () => {
     });
     it ("invite member to group", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: alice.privateKey });
       await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
       const group = (await client.getGroups(dave.address))[0];
       assert.equal(group.name, "group1");
@@ -110,7 +110,7 @@ describe("GxCertWriter", () => {
     });
     it ("invite same member to group", async function() { 
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: alice.privateKey });
       try {
         await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
         assert.fail();
@@ -120,7 +120,7 @@ describe("GxCertWriter", () => {
     });
     it ("disable group member", async function() {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddress(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForDisabling(dave.address, { privateKey: alice.privateKey });
       try {
         await writer.disableGroupMember(charlie.address, groupId, signedAddress);
       } catch(err) {
