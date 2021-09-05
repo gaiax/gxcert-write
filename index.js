@@ -118,6 +118,9 @@ class GxCertWriter {
     });
   }
 
+  async updateGroup(writerAddress, signedGroup) {
+
+  }
   async createUserCerts(writerAddress, signedObjects) {
     const certIds = [];
     const froms = [];

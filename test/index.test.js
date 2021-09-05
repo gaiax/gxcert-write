@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0x0B69CF4510bC50d6B8b406a9D63cae436B7dc829";
+const contractAddress = "0xb57734D34332bF12f9cBa2b4edee52743F3116bb";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -138,6 +138,34 @@ describe("GxCertWriter", () => {
       }
       assert.equal(group.members.length, 1);
       assert.equal(group.members[0].name, "alice");
+    });
+    it ("update group", async function() {
+      this.timeout(20 * 1000);
+      const newGroup = {
+        groupId,
+        name: "name2",
+        residence: "residence2",
+        phone: "phone2",
+      }
+      const signedGroup = await client.signGroup(newGroup, { privateKey });
+      try {
+        await writer.updateGroup(charlie.address, signedGroup);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+        return;
+      }
+      let group;
+      try {
+        group = await client.getGroup(groupId);
+      } catch(err) {
+        console.error(err);
+        assert.fail();
+      }
+      assert.equal(group.groupId, newGroup.groupId);
+      assert.equal(group.name, newGroup.name);
+      assert.equal(group.residence, newGroup.residence);
+      assert.equal(group.phone, newGroup.phone);
     });
   });
   describe("Cert", () => {
