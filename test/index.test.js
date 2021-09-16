@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0xE19F38e0fA7B005E8E62E837B0D79C8558fAd8E0";
+const contractAddress = "0x38c009E363f7AcAEf5a29674192EF5edBe8cFE3f";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress);
@@ -247,19 +247,14 @@ describe("GxCertWriter", () => {
     });
     it("createUserCerts", async function() {
       this.timeout(20 * 1000);
-      const userCert = {
-        certId,
-        from: alice.address,
-        to: bob.address,
-      }
-      const signedUserCertificate = await client.signUserCertificate(userCert, { privateKey: alice.privateKey });
-      const signedUserCertificates = [];
+      const tos = [];
       for (let i = 0; i < 5; i++) {
-        signedUserCertificates.push(signedUserCertificate);
+        tos.push(bob.address);
       }
+      const signed = await client.signUserCertificates(certId, alice.address, tos, { privateKey: alice.privateKey });
       
       try {
-        await writer.createUserCerts(charlie.address, signedUserCertificates);
+        await writer.createUserCerts(charlie.address, signed);
       } catch(err) {
         console.error(err);
         assert.fail();
@@ -269,8 +264,8 @@ describe("GxCertWriter", () => {
       assert.equal(userCerts.length, 6);
       for (let i = 0; i < 5; i++) {
         assert.equal(userCerts[i].certificate.id, certId);
-        assert.equal(userCerts[i].from, userCert.from);
-        assert.equal(userCerts[i].to, userCert.to);
+        assert.equal(userCerts[i].from, alice.address);
+        assert.equal(userCerts[i].to, bob.address);
       }
     });
     it ("invalidateUserCert", async function() {
