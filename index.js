@@ -45,9 +45,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async updateProfile(writerAddress, signedProfile) {
     const data = this.contract.methods.updateProfile(signedProfile.profile.name, signedProfile.profile.email, signedProfile.profile.icon, signedProfile.signature).encodeABI();
@@ -68,9 +66,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async createGroup(writerAddress, group) {
     const data = this.contract.methods.createGroup(group.name, group.residence, group.phone, group.member).encodeABI();
@@ -91,9 +87,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async invalidateUserCert(writerAddress, signedUserCert) {
     const data = this.contract.methods.invalidateUserCert(signedUserCert.userCertId, signedUserCert.signature).encodeABI();
@@ -114,9 +108,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async disableGroupMember(writerAddress, groupId, signedMember) {
     const data = this.contract.methods.disableGroupMember(groupId, signedMember.address, signedMember.signature).encodeABI();
@@ -137,9 +129,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async inviteMemberToGroup(writerAddress, groupId, signedMember) {
     const data = this.contract.methods.inviteMemberToGroup(groupId, signedMember.address, signedMember.signature).encodeABI();
@@ -160,9 +150,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
 
   async updateGroup(writerAddress, signedGroup) {
@@ -182,9 +170,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async createUserCerts(writerAddress, signedObject) {
     const data = this.contract.methods.createUserCerts(signedObject.certId, signedObject.from, signedObject.tos, signedObject.signature).encodeABI();
@@ -203,9 +189,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async createUserCert(writerAddress, signedObject) {
     const data = this.contract.methods.createUserCert(signedObject.userCertificate.certId, signedObject.userCertificate.from, signedObject.userCertificate.to, signedObject.signature).encodeABI();
@@ -224,9 +208,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
   async createCert(writerAddress, signedObject) {
     const data = this.contract.methods.createCert(signedObject.certificate.groupId, signedObject.cid, signedObject.signature).encodeABI();
@@ -245,9 +227,7 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    await this.web3.eth.sendSignedTransaction(rawData).on("receipt", (receipt) => {
-      console.log(receipt);
-    });
+    await this.web3.eth.sendSignedTransaction(rawData);
   }
 }
 
