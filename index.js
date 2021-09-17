@@ -3,6 +3,7 @@ const Common = require("ethereumjs-common").default;
 const fs = require("fs");
 const abi = JSON.parse(fs.readFileSync(__dirname + "/abi.json", "utf8"));
 
+
 class GxCertWriter {
   constructor(web3, contractAddress, privateKey, common) {
     this.web3 = web3;
