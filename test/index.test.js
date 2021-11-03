@@ -8,7 +8,7 @@ const privateKey = fs.readFileSync(__dirname + "/../.privkey", "utf8").trim();
 const charlie = {
   address: "0x4e3911c111bBEb8d254708Fb556e4A09C475A87E",
   privateKey,
-}
+};
 const Common = require("ethereumjs-common").default;
 const common = Common.forCustomChain(
   "mainnet",
@@ -34,21 +34,27 @@ let validProfile = {
   name: "alice",
   email: "alice@example.com",
   icon: "icon",
-}
+};
 
 describe("GxCertWriter", () => {
-  it ("init", async function () {
+  it("init", async function () {
     this.timeout(20 * 1000);
     await writer.init();
     await client.init();
   });
   describe("Profile", () => {
-    it ("create profile", async function() {
+    it("create profile", async function () {
       this.timeout(20 * 1000);
-      const signedProfile = await client.signProfile(validProfile, { privateKey: alice.privateKey });
+      const signedProfile = await client.signProfile(validProfile, {
+        privateKey: alice.privateKey,
+      });
       try {
-        await writer.createProfile(charlie.address, alice.address, signedProfile);
-      } catch(err) {
+        await writer.createProfile(
+          charlie.address,
+          alice.address,
+          signedProfile
+        );
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -56,7 +62,7 @@ describe("GxCertWriter", () => {
       let profile;
       try {
         profile = await client.getProfile(alice.address);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -65,17 +71,19 @@ describe("GxCertWriter", () => {
       assert.equal(profile.email, validProfile.email);
       assert.equal(profile.icon, validProfile.icon);
     });
-    it ("update profile", async function() {
+    it("update profile", async function () {
       this.timeout(20 * 1000);
       const newProfile = {
         name: "alice2",
         email: "email2",
         icon: "icon2",
-      }
-      const signedProfile = await client.signProfileForUpdating(newProfile, { privateKey: alice.privateKey });
+      };
+      const signedProfile = await client.signProfileForUpdating(newProfile, {
+        privateKey: alice.privateKey,
+      });
       try {
         await writer.updateProfile(charlie.address, signedProfile);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -84,7 +92,7 @@ describe("GxCertWriter", () => {
       let profile;
       try {
         profile = await client.getProfile(alice.address);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
       }
@@ -95,17 +103,17 @@ describe("GxCertWriter", () => {
     });
   });
   describe("Group", () => {
-    it("create group", async function() {
+    it("create group", async function () {
       this.timeout(20 * 1000);
       const group = {
         name: "group1",
         residence: "residence",
         phone: "phone",
         member: alice.address,
-      }
+      };
       try {
         await writer.createGroup(charlie.address, group);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -118,19 +126,27 @@ describe("GxCertWriter", () => {
       assert.equal(validProfile.name, _group.members[0].name);
       groupId = _group.groupId;
     });
-    it ("invite member to group by wrong sign", async function () {
+    it("invite member to group by wrong sign", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: bob.privateKey});
+      const signedAddress = await client.signMemberAddressForInviting(
+        dave.address,
+        { privateKey: bob.privateKey }
+      );
       try {
-        await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
+        await writer.inviteMemberToGroup(
+          charlie.address,
+          groupId,
+          signedAddress
+        );
         assert.fail();
-      } catch(err) {
-
-      }
+      } catch (err) {}
     });
-    it ("invite member to group", async function () {
+    it("invite member to group", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForInviting(
+        dave.address,
+        { privateKey: alice.privateKey }
+      );
       await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
       const group = (await client.getGroups(dave.address))[0];
       assert.equal(group.name, "group1");
@@ -139,22 +155,34 @@ describe("GxCertWriter", () => {
       assert.equal(group.members[1].name, "");
       assert.equal(group.members[1].address, dave.address);
     });
-    it ("invite same member to group", async function() { 
+    it("invite same member to group", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddressForInviting(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForInviting(
+        dave.address,
+        { privateKey: alice.privateKey }
+      );
       try {
-        await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
+        await writer.inviteMemberToGroup(
+          charlie.address,
+          groupId,
+          signedAddress
+        );
         assert.fail();
-      } catch(err) {
-        
-      }
+      } catch (err) {}
     });
-    it ("disable group member", async function() {
+    it("disable group member", async function () {
       this.timeout(20 * 1000);
-      const signedAddress = await client.signMemberAddressForDisabling(dave.address, { privateKey: alice.privateKey });
+      const signedAddress = await client.signMemberAddressForDisabling(
+        dave.address,
+        { privateKey: alice.privateKey }
+      );
       try {
-        await writer.disableGroupMember(charlie.address, groupId, signedAddress);
-      } catch(err) {
+        await writer.disableGroupMember(
+          charlie.address,
+          groupId,
+          signedAddress
+        );
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -162,7 +190,7 @@ describe("GxCertWriter", () => {
       let group;
       try {
         group = await client.getGroup(groupId);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -170,18 +198,20 @@ describe("GxCertWriter", () => {
       assert.equal(group.members.length, 1);
       assert.equal(group.members[0].name, validProfile.name);
     });
-    it ("update group", async function() {
+    it("update group", async function () {
       this.timeout(20 * 1000);
       const newGroup = {
         groupId,
         name: "name2",
         residence: "residence2",
         phone: "phone2",
-      }
-      const signedGroup = await client.signGroup(newGroup, { privateKey: alice.privateKey });
+      };
+      const signedGroup = await client.signGroup(newGroup, {
+        privateKey: alice.privateKey,
+      });
       try {
         await writer.updateGroup(charlie.address, signedGroup);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -189,7 +219,7 @@ describe("GxCertWriter", () => {
       let group;
       try {
         group = await client.getGroup(groupId);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
       }
@@ -208,11 +238,13 @@ describe("GxCertWriter", () => {
         description: "description",
         image: "image",
         groupId,
-      }
-      const signedCertificate = await client.signCertificate(certificate, { privateKey: alice.privateKey });
+      };
+      const signedCertificate = await client.signCertificate(certificate, {
+        privateKey: alice.privateKey,
+      });
       try {
         await writer.createCert(charlie.address, signedCertificate);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -224,17 +256,19 @@ describe("GxCertWriter", () => {
   });
 
   describe("User Cert", () => {
-    it("createUserCert", async function() {
+    it("createUserCert", async function () {
       this.timeout(20 * 1000);
       const userCert = {
         certId,
         from: alice.address,
         to: bob.address,
-      }
-      const signedUserCertificate = await client.signUserCertificate(userCert, { privateKey: alice.privateKey });
+      };
+      const signedUserCertificate = await client.signUserCertificate(userCert, {
+        privateKey: alice.privateKey,
+      });
       try {
         await writer.createUserCert(charlie.address, signedUserCertificate);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
       }
@@ -245,17 +279,22 @@ describe("GxCertWriter", () => {
       assert.equal(userCerts[0].from, userCert.from);
       assert.equal(userCerts[0].to, userCert.to);
     });
-    it("createUserCerts", async function() {
+    it("createUserCerts", async function () {
       this.timeout(20 * 1000);
       const tos = [];
       for (let i = 0; i < 5; i++) {
         tos.push(bob.address);
       }
-      const signed = await client.signUserCertificates(certId, alice.address, tos, { privateKey: alice.privateKey });
-      
+      const signed = await client.signUserCertificates(
+        certId,
+        alice.address,
+        tos,
+        { privateKey: alice.privateKey }
+      );
+
       try {
         await writer.createUserCerts(charlie.address, signed);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -268,12 +307,15 @@ describe("GxCertWriter", () => {
         assert.equal(userCerts[i].to, bob.address);
       }
     });
-    it ("invalidateUserCert", async function() {
-      this.timeout(20 * 1000);
-      const signedUserCertificate = await client.signUserCertForInvalidation(userCertId, { privateKey: alice.privateKey });
+    it("invalidateUserCert", async function () {
+      this.timeout(100 * 1000);
+      const signedUserCertificate = await client.signUserCertForInvalidation(
+        userCertId,
+        { privateKey: alice.privateKey }
+      );
       try {
         await writer.invalidateUserCert(charlie.address, signedUserCertificate);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
         assert.fail();
         return;
@@ -282,5 +324,4 @@ describe("GxCertWriter", () => {
       assert.equal(userCerts.length, 5);
     });
   });
-
 });
