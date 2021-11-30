@@ -23,7 +23,13 @@ const dave = web3.eth.accounts.create();
 const contractAddress = "0x38c009E363f7AcAEf5a29674192EF5edBe8cFE3f";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
-const client = new GxCertClient(web3, contractAddress);
+const client = new GxCertClient(web3, contractAddress, null,
+  {
+    host: "ipfs.infura.io",
+    port: 5001,
+    protocol: "https",
+  }
+);
 const assert = require("assert");
 
 let groupId;
@@ -251,7 +257,7 @@ describe("GxCertWriter", () => {
       }
       const certificates = await client.getGroupCerts(groupId);
       assert.equal(certificates.length, 1);
-      certId = certificates[0].id;
+      certId = certificates[0].certId;
     });
   });
 
@@ -275,7 +281,6 @@ describe("GxCertWriter", () => {
       const userCerts = await client.getIssuedUserCerts(certId);
       assert.equal(userCerts.length, 1);
       userCertId = userCerts[0].userCertId;
-      assert.equal(userCerts[0].certificate.id, certId);
       assert.equal(userCerts[0].from, userCert.from);
       assert.equal(userCerts[0].to, userCert.to);
     });
@@ -302,7 +307,6 @@ describe("GxCertWriter", () => {
       const userCerts = await client.getIssuedUserCerts(certId);
       assert.equal(userCerts.length, 6);
       for (let i = 0; i < 5; i++) {
-        assert.equal(userCerts[i].certificate.id, certId);
         assert.equal(userCerts[i].from, alice.address);
         assert.equal(userCerts[i].to, bob.address);
       }
