@@ -20,14 +20,14 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0x38c009E363f7AcAEf5a29674192EF5edBe8cFE3f";
+const contractAddress = "0x917989f57bBCF20379F563Ef9f2d6dddbe512181";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress, null,
   {
-    host: "ipfs.infura.io",
+    host: "ipfs.gaiax-blockchain.com",
     port: 5001,
-    protocol: "https",
+    protocol: "http",
   }
 );
 const assert = require("assert");
