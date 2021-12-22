@@ -25,9 +25,9 @@ const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress, null,
   {
-    host: "ipfs.infura.io",
+    host: "ipfs.gaiax-blockchain.com",
     port: 5001,
-    protocol: "https",
+    protocol: "http",
   }
 );
 const assert = require("assert");
