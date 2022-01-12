@@ -39,8 +39,8 @@ class GxCertWriter {
       .createProfile(
         userAddress,
         signedProfile.profile.name,
-        signedProfile.profile.email,
         signedProfile.profile.icon,
+        signedProfile.nonce,
         signedProfile.signature
       )
       .encodeABI();
@@ -48,8 +48,8 @@ class GxCertWriter {
       .createProfile(
         userAddress,
         signedProfile.profile.name,
-        signedProfile.profile.email,
         signedProfile.profile.icon,
+        signedProfile.nonce,
         signedProfile.signature
       )
       .estimateGas({
@@ -61,16 +61,16 @@ class GxCertWriter {
     const data = this.contract.methods
       .updateProfile(
         signedProfile.profile.name,
-        signedProfile.profile.email,
         signedProfile.profile.icon,
+        signedProfile.nonce,
         signedProfile.signature
       )
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .updateProfile(
         signedProfile.profile.name,
-        signedProfile.profile.email,
         signedProfile.profile.icon,
+        signedProfile.nonce,
         signedProfile.signature
       )
       .estimateGas({
@@ -78,12 +78,26 @@ class GxCertWriter {
       });
     return await this.write(data, gasEstimate, writerAddress);
   }
-  async createGroup(writerAddress, group) {
+  async createGroup(writerAddress, address, signedGroup) {
     const data = this.contract.methods
-      .createGroup(group.name, group.residence, group.phone, group.member)
+      .createGroup(
+        address,
+        signedGroup.group.name, 
+        signedGroup.group.residence, 
+        signedGroup.group.phone, 
+        signedGroup.nonce,
+        signedGroup.signature
+      )
       .encodeABI();
     const gasEstimate = await this.contract.methods
-      .createGroup(group.name, group.residence, group.phone, group.member)
+      .createGroup(
+        address,
+        signedGroup.group.name, 
+        signedGroup.group.residence, 
+        signedGroup.group.phone, 
+        signedGroup.nonce,
+        signedGroup.signature
+      )
       .estimateGas({
         from: writerAddress,
       });
@@ -91,10 +105,18 @@ class GxCertWriter {
   }
   async invalidateUserCert(writerAddress, signedUserCert) {
     const data = this.contract.methods
-      .invalidateUserCert(signedUserCert.userCertId, signedUserCert.signature)
+      .invalidateUserCert(
+        signedUserCert.userCertId, 
+        signedUserCert.nonce,
+        signedUserCert.signature
+      )
       .encodeABI();
     const gasEstimate = await this.contract.methods
-      .invalidateUserCert(signedUserCert.userCertId, signedUserCert.signature)
+      .invalidateUserCert(
+        signedUserCert.userCertId, 
+        signedUserCert.nonce,
+        signedUserCert.signature
+      )
       .estimateGas({
         from: writerAddress,
       });
@@ -102,10 +124,20 @@ class GxCertWriter {
   }
   async disableGroupMember(writerAddress, groupId, signedMember) {
     const data = this.contract.methods
-      .disableGroupMember(groupId, signedMember.address, signedMember.signature)
+      .disableGroupMember(
+        groupId, 
+        signedMember.address, 
+        signedMember.nonce,
+        signedMember.signature
+      )
       .encodeABI();
     const gasEstimate = await this.contract.methods
-      .disableGroupMember(groupId, signedMember.address, signedMember.signature)
+      .disableGroupMember(
+        groupId, 
+        signedMember.address, 
+        signedMember.nonce,
+        signedMember.signature
+      )
       .estimateGas({
         from: writerAddress,
       });
@@ -116,6 +148,7 @@ class GxCertWriter {
       .inviteMemberToGroup(
         groupId,
         signedMember.address,
+        signedMember.nonce,
         signedMember.signature
       )
       .encodeABI();
@@ -123,6 +156,7 @@ class GxCertWriter {
       .inviteMemberToGroup(
         groupId,
         signedMember.address,
+        signedMember.nonce,
         signedMember.signature
       )
       .estimateGas({
@@ -138,6 +172,7 @@ class GxCertWriter {
         signedGroup.group.name,
         signedGroup.group.residence,
         signedGroup.group.phone,
+        signedGroup.nonce,
         signedGroup.signature
       )
       .encodeABI();
@@ -147,6 +182,7 @@ class GxCertWriter {
         signedGroup.group.name,
         signedGroup.group.residence,
         signedGroup.group.phone,
+        signedGroup.nonce,
         signedGroup.signature
       )
       .estimateGas({ from: writerAddress });
@@ -158,6 +194,7 @@ class GxCertWriter {
         signedObject.certId,
         signedObject.from,
         signedObject.tos,
+        signedObject.nonce,
         signedObject.signature
       )
       .encodeABI();
@@ -166,6 +203,7 @@ class GxCertWriter {
         signedObject.certId,
         signedObject.from,
         signedObject.tos,
+        signedObject.nonce,
         signedObject.signature
       )
       .estimateGas({ from: writerAddress });
@@ -177,6 +215,7 @@ class GxCertWriter {
         signedObject.userCertificate.certId,
         signedObject.userCertificate.from,
         signedObject.userCertificate.to,
+        signedObject.nonce,
         signedObject.signature
       )
       .encodeABI();
@@ -185,6 +224,7 @@ class GxCertWriter {
         signedObject.userCertificate.certId,
         signedObject.userCertificate.from,
         signedObject.userCertificate.to,
+        signedObject.nonce,
         signedObject.signature
       )
       .estimateGas({ from: writerAddress });
@@ -195,6 +235,7 @@ class GxCertWriter {
       .createCert(
         signedObject.certificate.groupId,
         signedObject.cid,
+        signedObject.nonce,
         signedObject.signature
       )
       .encodeABI();
@@ -202,6 +243,7 @@ class GxCertWriter {
       .createCert(
         signedObject.certificate.groupId,
         signedObject.cid,
+        signedObject.nonce,
         signedObject.signature
       )
       .estimateGas({ from: writerAddress });

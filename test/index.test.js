@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0xA7decdC6c8FbE55478b9184b62C910Bdb4cb5E20";
+const contractAddress = "0x7b52FA2f232559ab5847F1A5Cc02F569dF9699cC";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress, null,
@@ -28,7 +28,8 @@ const client = new GxCertClient(web3, contractAddress, null,
     host: "ipfs.gaiax-blockchain.com",
     port: 5001,
     protocol: "http",
-  }
+  },
+  "http://ipfs.gaiax-blockchain.com:8080/ipfs"
 );
 const assert = require("assert");
 
@@ -38,7 +39,6 @@ let userCertId;
 
 let validProfile = {
   name: "alice",
-  email: "alice@example.com",
   icon: "icon",
 };
 
@@ -65,6 +65,9 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+    });
+    it ("get profile", async function() {
+      this.timeout(20 * 1000);
       let profile;
       try {
         profile = await client.getProfile(alice.address);
@@ -74,14 +77,12 @@ describe("GxCertWriter", () => {
         return;
       }
       assert.equal(profile.name, validProfile.name);
-      assert.equal(profile.email, validProfile.email);
       assert.equal(profile.icon, validProfile.icon);
     });
     it("update profile", async function () {
       this.timeout(20 * 1000);
       const newProfile = {
         name: "alice2",
-        email: "email2",
         icon: "icon2",
       };
       const signedProfile = await client.signProfileForUpdating(newProfile, {
@@ -103,32 +104,37 @@ describe("GxCertWriter", () => {
         assert.fail();
       }
       assert.equal(profile.name, newProfile.name);
-      assert.equal(profile.email, newProfile.email);
       assert.equal(profile.icon, newProfile.icon);
       validProfile = newProfile;
     });
   });
   describe("Group", () => {
+    const group = {
+      name: "group1",
+      residence: "residence",
+      phone: "phone",
+    };
     it("create group", async function () {
       this.timeout(20 * 1000);
-      const group = {
-        name: "group1",
-        residence: "residence",
-        phone: "phone",
-        member: alice.address,
-      };
+      const signedGroup = await client.signGroup(group, {
+        privateKey: alice.privateKey,
+      });
       try {
-        await writer.createGroup(charlie.address, group);
+        await writer.createGroup(charlie.address, alice.address, signedGroup);
       } catch (err) {
         console.error(err);
         assert.fail();
         return;
       }
+    });
+
+    it ("get group", async function() {
+      this.timeout(20 * 1000);
       const _group = (await client.getGroups(alice.address))[0];
       assert.equal(group.name, _group.name);
       assert.equal(group.residence, _group.residence);
       assert.equal(group.phone, _group.phone);
-      assert.equal(group.member, _group.members[0].address);
+      assert.equal(alice.address, _group.members[0].address);
       assert.equal(validProfile.name, _group.members[0].name);
       groupId = _group.groupId;
     });
@@ -145,7 +151,9 @@ describe("GxCertWriter", () => {
           signedAddress
         );
         assert.fail();
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
     });
     it("invite member to group", async function () {
       this.timeout(20 * 1000);
@@ -154,6 +162,8 @@ describe("GxCertWriter", () => {
         { privateKey: alice.privateKey }
       );
       await writer.inviteMemberToGroup(charlie.address, groupId, signedAddress);
+    });
+    it ("get group after inviting", async function() {
       const group = (await client.getGroups(dave.address))[0];
       assert.equal(group.name, "group1");
       assert.equal(group.members[0].name, validProfile.name);
@@ -174,7 +184,9 @@ describe("GxCertWriter", () => {
           signedAddress
         );
         assert.fail();
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+      }
     });
     it("disable group member", async function () {
       this.timeout(20 * 1000);
@@ -193,6 +205,9 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+    });
+
+    it ("get group members after disabling", async function() {
       let group;
       try {
         group = await client.getGroup(groupId);
@@ -204,24 +219,29 @@ describe("GxCertWriter", () => {
       assert.equal(group.members.length, 1);
       assert.equal(group.members[0].name, validProfile.name);
     });
+    const newGroup = {
+      name: "name2",
+      residence: "residence2",
+      phone: "phone2",
+    };
     it("update group", async function () {
+      newGroup.groupId = groupId;
       this.timeout(20 * 1000);
-      const newGroup = {
-        groupId,
-        name: "name2",
-        residence: "residence2",
-        phone: "phone2",
-      };
-      const signedGroup = await client.signGroup(newGroup, {
+      const signedGroup = await client.signGroupForUpdating(newGroup, {
         privateKey: alice.privateKey,
       });
       try {
-        await writer.updateGroup(charlie.address, signedGroup);
+        await writer.updateGroup(
+          charlie.address, 
+          signedGroup
+        );
       } catch (err) {
         console.error(err);
         assert.fail();
         return;
       }
+    });
+    it ("get group after updating", async function() {
       let group;
       try {
         group = await client.getGroup(groupId);
@@ -255,9 +275,13 @@ describe("GxCertWriter", () => {
         assert.fail();
         return;
       }
+    });
+
+    it ("get group certs", async function() {
+      this.timeout(20 * 1000);
       const certificates = await client.getGroupCerts(groupId);
       assert.equal(certificates.length, 1);
-      certId = certificates[0].certId;
+      certId = parseInt(certificates[0].certId);
     });
   });
 
@@ -280,7 +304,7 @@ describe("GxCertWriter", () => {
       }
       const userCerts = await client.getIssuedUserCerts(certId);
       assert.equal(userCerts.length, 1);
-      userCertId = userCerts[0].userCertId;
+      userCertId = parseInt(userCerts[0].userCertId);
       assert.equal(userCerts[0].from, userCert.from);
       assert.equal(userCerts[0].to, userCert.to);
     });
