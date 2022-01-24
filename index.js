@@ -78,10 +78,10 @@ class GxCertWriter {
       });
     return await this.write(data, gasEstimate, writerAddress);
   }
-  async createGroup(writerAddress, address, signedGroup) {
+  async createGroup(writerAddress, signedGroup) {
     const data = this.contract.methods
       .createGroup(
-        address,
+        signedGroup.address,
         signedGroup.group.name, 
         signedGroup.group.residence, 
         signedGroup.group.phone, 
@@ -91,7 +91,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .createGroup(
-        address,
+        signedGroup.address,
         signedGroup.group.name, 
         signedGroup.group.residence, 
         signedGroup.group.phone, 

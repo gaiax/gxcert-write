@@ -116,11 +116,11 @@ describe("GxCertWriter", () => {
     };
     it("create group", async function () {
       this.timeout(20 * 1000);
-      const signedGroup = await client.signGroup(group, {
+      const signedGroup = await client.signGroup(group, alice.address, {
         privateKey: alice.privateKey,
       });
       try {
-        await writer.createGroup(charlie.address, alice.address, signedGroup);
+        await writer.createGroup(charlie.address, signedGroup);
       } catch (err) {
         console.error(err);
         assert.fail();
