@@ -27,9 +27,9 @@ const client = new GxCertClient(web3, contractAddress, null,
   {
     host: "ipfs.gaiax-blockchain.com",
     port: 5001,
-    protocol: "http",
+    protocol: "https",
   },
-  "http://ipfs.gaiax-blockchain.com:8080/ipfs"
+  "https://ipfs.gaiax-blockchain.com/ipfs"
 );
 const assert = require("assert");
 
