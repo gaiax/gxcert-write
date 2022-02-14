@@ -234,7 +234,9 @@ class GxCertWriter {
     const data = this.contract.methods
       .createCert(
         signedObject.certificate.groupId,
-        signedObject.cid,
+        signedObject.certificate.title,
+        signedObject.certificate.description,
+        signedObject.certificate.image,
         signedObject.nonce,
         signedObject.signature
       )
@@ -242,7 +244,9 @@ class GxCertWriter {
     const gasEstimate = await this.contract.methods
       .createCert(
         signedObject.certificate.groupId,
-        signedObject.cid,
+        signedObject.certificate.title,
+        signedObject.certificate.description,
+        signedObject.certificate.image,
         signedObject.nonce,
         signedObject.signature
       )
