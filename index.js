@@ -22,7 +22,8 @@ class GxCertWriter {
     const details = {
       nonce: this.web3.utils.toHex(nonce),
       gasPrice: this.web3.utils.toHex(gasPrice),
-      gasLimit: this.web3.utils.toHex(30000000),
+      gasLimit: this.web3.utils.toHex(gasEstimate),
+      type: 0,
       to: this.contractAddress,
       from: writerAddress,
       data,
