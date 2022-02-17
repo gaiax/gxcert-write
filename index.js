@@ -31,7 +31,15 @@ class GxCertWriter {
     const transaction = await new EthereumTx(details, { common: this.common });
     transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
-    const receipt = await this.web3.eth.sendSignedTransaction(rawData);
+    let receipt;
+    try { 
+      receipt = await this.web3.eth.sendSignedTransaction(rawData);
+    } catch(err) {
+      throw err;
+    }
+    if (receipt === null) {
+      throw new Error("Failed to get transaction receipt.");
+    }
     return receipt.transactionHash;
   }
   async createProfile(writerAddress, userAddress, signedProfile) {
