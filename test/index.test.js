@@ -9,7 +9,7 @@ const charlie = {
   address: "0x4e3911c111bBEb8d254708Fb556e4A09C475A87E",
   privateKey,
 };
-const Common = require("ethereumjs-common").default;
+const Common = require("@ethereumjs/common").default;
 const common = Common.forCustomChain(
   "mainnet",
   {

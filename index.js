@@ -1,4 +1,4 @@
-const EthereumTx = require("ethereumjs-tx").Transaction;
+const { Transaction } = require("@ethereumjs/tx");
 const Common = require("ethereumjs-common").default;
 const fs = require("fs");
 const abi = JSON.parse(fs.readFileSync(__dirname + "/abi.json", "utf8"));
@@ -29,8 +29,8 @@ class GxCertWriter {
       data,
     };
 
-    const transaction = await new EthereumTx(details, { common: this.common });
-    transaction.sign(Buffer.from(this.privateKey, "hex"));
+    let transaction = Transaction.fromTxData(details, { common: this.common });
+    transaction = transaction.sign(Buffer.from(this.privateKey, "hex"));
     const rawData = "0x" + transaction.serialize().toString("hex");
     let receipt;
     try { 
