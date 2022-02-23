@@ -69,6 +69,7 @@ class GxCertWriter {
   async updateProfile(writerAddress, signedProfile) {
     const data = this.contract.methods
       .updateProfile(
+        signedProfile.signerAddress,
         signedProfile.profile.name,
         signedProfile.profile.icon,
         signedProfile.nonce,
@@ -77,6 +78,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .updateProfile(
+        signedProfile.signerAddress,
         signedProfile.profile.name,
         signedProfile.profile.icon,
         signedProfile.nonce,
@@ -115,6 +117,7 @@ class GxCertWriter {
   async invalidateUserCert(writerAddress, signedUserCert) {
     const data = this.contract.methods
       .invalidateUserCert(
+        signedUserCert.signerAddress,
         signedUserCert.userCertId, 
         signedUserCert.nonce,
         signedUserCert.signature
@@ -122,6 +125,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .invalidateUserCert(
+        signedUserCert.signerAddress,
         signedUserCert.userCertId, 
         signedUserCert.nonce,
         signedUserCert.signature
@@ -155,6 +159,7 @@ class GxCertWriter {
   async inviteMemberToGroup(writerAddress, groupId, signedMember) {
     const data = this.contract.methods
       .inviteMemberToGroup(
+        signedMember.signerAddress,
         groupId,
         signedMember.address,
         signedMember.nonce,
@@ -163,6 +168,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .inviteMemberToGroup(
+        signedMember.signerAddress,
         groupId,
         signedMember.address,
         signedMember.nonce,
@@ -177,6 +183,7 @@ class GxCertWriter {
   async updateGroup(writerAddress, signedGroup) {
     const data = this.contract.methods
       .updateGroup(
+        signedGroup.signerAddress,
         signedGroup.group.groupId,
         signedGroup.group.name,
         signedGroup.group.residence,
@@ -187,6 +194,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .updateGroup(
+        signedGroup.signerAddress,
         signedGroup.group.groupId,
         signedGroup.group.name,
         signedGroup.group.residence,
@@ -242,6 +250,7 @@ class GxCertWriter {
   async createCert(writerAddress, signedObject) {
     const data = this.contract.methods
       .createCert(
+        signedObject.signerAddress,
         signedObject.certificate.groupId,
         signedObject.certificate.title,
         signedObject.certificate.description,
@@ -252,6 +261,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .createCert(
+        signedObject.signerAddress,
         signedObject.certificate.groupId,
         signedObject.certificate.title,
         signedObject.certificate.description,
