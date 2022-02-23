@@ -20,7 +20,7 @@ const common = Common.forCustomChain(
 );
 web3.eth.accounts.privateKeyToAccount(privateKey);
 const dave = web3.eth.accounts.create();
-const contractAddress = "0x2Fa9B08f4DBc003EB0BFa98B8425fA8ECd9c5626";
+const contractAddress = "0x7799acDa2093Da00a2fB695243122B0c8F66d659";
 const writer = new GxCertWriter(web3, contractAddress, privateKey, common);
 const GxCertClient = require("gxcert-lib");
 const client = new GxCertClient(web3, contractAddress, null,

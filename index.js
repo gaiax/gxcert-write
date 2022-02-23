@@ -210,8 +210,8 @@ class GxCertWriter {
   async createUserCerts(writerAddress, signedObject) {
     const data = this.contract.methods
       .createUserCerts(
-        signedObject.certId,
         signedObject.from,
+        signedObject.certId,
         signedObject.tos,
         signedObject.nonce,
         signedObject.signature
@@ -219,8 +219,8 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .createUserCerts(
-        signedObject.certId,
         signedObject.from,
+        signedObject.certId,
         signedObject.tos,
         signedObject.nonce,
         signedObject.signature
@@ -231,8 +231,8 @@ class GxCertWriter {
   async createUserCert(writerAddress, signedObject) {
     const data = this.contract.methods
       .createUserCert(
-        signedObject.userCertificate.certId,
         signedObject.userCertificate.from,
+        signedObject.userCertificate.certId,
         signedObject.userCertificate.to,
         signedObject.nonce,
         signedObject.signature
@@ -240,8 +240,8 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .createUserCert(
-        signedObject.userCertificate.certId,
         signedObject.userCertificate.from,
+        signedObject.userCertificate.certId,
         signedObject.userCertificate.to,
         signedObject.nonce,
         signedObject.signature
