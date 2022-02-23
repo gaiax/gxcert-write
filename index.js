@@ -138,6 +138,7 @@ class GxCertWriter {
   async disableGroupMember(writerAddress, groupId, signedMember) {
     const data = this.contract.methods
       .disableGroupMember(
+        signedMember.signerAddress,
         groupId, 
         signedMember.address, 
         signedMember.nonce,
@@ -146,6 +147,7 @@ class GxCertWriter {
       .encodeABI();
     const gasEstimate = await this.contract.methods
       .disableGroupMember(
+        signedMember.signerAddress,
         groupId, 
         signedMember.address, 
         signedMember.nonce,
